@@ -3,52 +3,58 @@ import bcryptjs from 'bcryptjs';
 import { generateTokenAndSetCookie } from '../utils/generateTokenAndSetCookie.js';
 
 export const signup = async (req, res) => {
-    const {email, password, name} = req.body;
+    const { email, password, name } = req.body;
+
     try {
         if (!email || !password || !name) {
-            throw new Error('Please fill in all fields');
-    }
-    const userAlreadyExists = await User.findOne({email});
-    console.log("userAlreadyExists", userAlreadyExists);
-    if(userAlreadyExists) {
-        return res.status(400).json({success:false, message: "User already exists"});
-    }
+            return res.status(400).json({ success: false, message: 'Please fill in all fields' });
+        }
 
-    //1234656 = 1!@@#$34
-    //securtiy coz its encrypted
-    const hashedPassword =  await bcryptjs.hash(password,10);
-    const verificationToken = Math.floor(100000 + Math.random() * 9000).toString();
-    const user =  new User({
-        email,
-        password: hashedPassword,
-        name,
-        verificationToken,
-        verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, //24 hours
-    })
+        const lowerCaseEmail = email.toLowerCase();  // Ensure consistency
+        console.log("Checking for user:", lowerCaseEmail);
 
-    await user.save();
+        const userAlreadyExists = await User.findOne({ email: lowerCaseEmail });
+        console.log("User found:", userAlreadyExists ? "Yes" : "No");
 
-    //jwt
-    generateTokenAndSetCookie(res, user._id);
+        if (userAlreadyExists) {
+            return res.status(400).json({ success: false, message: "User already exists" });
+        }
 
-    res.status(201).json({
-        success: true,
-        message: "User created successfully",
-        user:{
-            ...user._doc,
-            password: undefined
-        },
-    });
-    generateTokenAndSetCookie(res,user._id);
+        const hashedPassword = await bcryptjs.hash(password, 10);
+        const verificationToken = Math.floor(100000 + Math.random() * 9000).toString();
+
+        const user = new User({
+            email: lowerCaseEmail,
+            password: hashedPassword,
+            name,
+            verificationToken,
+            verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
+        });
+
+        await user.save();
+
+        // Generate token & set cookie
+        generateTokenAndSetCookie(res, user._id);
+
+        res.status(201).json({
+            success: true,
+            message: "User created successfully",
+            user: {
+                ...user._doc,
+                password: undefined // Do not return password in response
+            },
+        });
 
     } catch (error) {
-        res.status(400).json({success: false, message: error.message});
+        console.error("Signup error:", error.message);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
+
 export const login = async (req, res) => {
     res.send("login route");
-}
+};
 
 export const logout = async (req, res) => {
     res.send("logout route");
-}
+};
