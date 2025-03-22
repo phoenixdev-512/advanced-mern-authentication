@@ -135,9 +135,9 @@ export const forgotPassword = async (req, res) => {
         }
         else {
             res.status(200).json({
-                success: true;
-                message: "Reset link sent successfully"
-            })
+                success: true,
+                message: "Reset link sent successfully",
+            });
         }
     } catch (error) {
         console.error("Error in Resetting Password");
