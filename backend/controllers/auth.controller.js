@@ -105,7 +105,16 @@ export const login = async (req, res) => {
         generateTokenAndSetCookie(res, user._id);
         
         user.lastlogin = Date.now();
-        
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Logged in Successfully",
+            user: {
+                ...user._doc,
+                password: undefined,
+            },
+        });
     } catch (error) {
         console.error("Login error:", error.message);
         res.status(500).json({ success: false, message: error.message });
@@ -115,4 +124,24 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
     res.clearCookie("token");
     res.status(200).json({ success: true, message: "Logged out successfully" });
+};
+
+export const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!userAlreadyExists) {
+            res.status(500).json({success: false, message: error.message });
+        }
+        else {
+            res.status(200).json({
+                success: true;
+                message: "Reset link sent successfully"
+            })
+        }
+    } catch (error) {
+        console.error("Error in Resetting Password");
+        res.status(500)
+    }
 }
+
