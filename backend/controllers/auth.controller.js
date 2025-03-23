@@ -131,7 +131,7 @@ export const forgotPassword = async (req, res) => {
     try {
         const user = await User.findOne({ email });
         if (!userAlreadyExists) {
-            res.status(500).json({success: false, message: error.message });
+            res.status(500).json({success: false, message: error .message });
         }
         else {
             res.status(200).json({
