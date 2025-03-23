@@ -143,5 +143,11 @@ export const forgotPassword = async (req, res) => {
         console.error("Error in Resetting Password");
         res.status(500)
     }
-}
+};
+// still need to implement the reset password function
+// the process of adding the reset password function is similar to the verification email function
+// the only difference is the token and the expiration time
+// the token is generated randomly and the expiration time is set to 1 hour
+// the user will be able to reset the password only if the token is valid and not expired
+
 

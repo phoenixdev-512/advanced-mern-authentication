@@ -41,3 +41,8 @@ export const sendWelcomeEmail =  async (email, name) => {
     throw new Error('Error sending Welcom email: ${error}');
 }
 };
+// email.js defines the functions for sending verification and welcome emails using the Mailtrap API. The sendVerificationEmail function takes the email address and verification token as arguments and sends a verification email to the user using the MailtrapClient instance and the VERIFICATION_EMAIL_TEMPLATE.
+// The sendWelcomeEmail function takes the email address and name as arguments and sends a welcome email to the user using the MailtrapClient instance and the template_uuid and template_variables.
+// The functions catch any errors that occur during the email sending process and log the error message to the console. If an error occurs, an Error object is thrown with the error message.
+// The functions are exported to be used in the auth.controller.js file to send verification and welcome emails to users during the signup and email verification processes.
+// The email.js file is responsible for defining the functions for sending verification and welcome emails to users using the Mailtrap API. The functions take the necessary parameters, such as the email address, verification token, and name, and use the MailtrapClient instance to send the emails.
