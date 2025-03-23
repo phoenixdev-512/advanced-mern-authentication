@@ -139,6 +139,9 @@ export const forgotPassword = async (req, res) => {
                 message: "Reset link sent successfully",
             });
         }
+        // generate token and set expiration time
+        // send email with reset link
+        // link should contain token
     } catch (error) {
         console.error("Error in Resetting Password");
         res.status(500)
