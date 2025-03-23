@@ -94,4 +94,3 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
 </html>
 `;
 
-// export const PASSWORD_RESET_EXPIRED_TEMPLATE 
