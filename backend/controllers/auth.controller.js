@@ -127,35 +127,39 @@ export const logout = async (req, res) => {
     res.clearCookie("token");
     res.status(200).json({ success: true, message: "Logged out successfully" });
 };
-
-export const forgotPassword = async (res, req) => {
-    const { email } = req.body;
+export const forgotPassword = async (req, res) => {
     try {
-        const user = await User.findOne({ email });
-        
-        if(!user) {
-            return res.status(400).json({ success: false, message: "User not found"});
+        // ✅ Added a check to ensure the request body and email exist
+        if (!req.body || !req.body.email) {
+            return res.status(400).json({ success: false, message: "Email is required" });
         }
 
-        // Generate the token
-        const resetToken =  crypto.randomBytes(20).toString("hex");
+        const { email } = req.body;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ success: false, message: "User not found" });
+        }
+
+        // ✅ Generating a secure random token for password reset
+        const resetToken = crypto.randomBytes(20).toString("hex");
+
+        // ✅ Setting token expiration time to 1 hour from now
         const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
-        
+
         user.resetPasswordToken = resetToken;
         user.resetPasswordTokenExpiresAt = resetTokenExpiresAt;
-    
         await user.save();
-    
-        //send User email
-        await sendResetPasswordEmail(user.email, '${process.env.CLIENT_URL}/reset-password?token=${resetToken}');
+
+        // ✅ Fixed template string issue by using backticks (`) instead of single quotes ('' or "")
+        await sendResetPasswordEmail(user.email, `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`);
+
+        res.status(200).json({ success: true, message: "Password reset email sent to your email address" });
+
     } catch (error) {
         console.error("Forgot password error:", error.message);
         res.status(500).json({ success: false, message: error.message });
-    };
-        
-
-    res.status(200).json({ success: true, message: "Password reset email sent to your email address"});
-
+    }
 };
 // The code above is a controller that handles the authentication logic
 
