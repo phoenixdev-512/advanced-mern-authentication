@@ -56,6 +56,7 @@ export const forgotPassword = async (res, req) => {
     console.error("Forgot password error:", error.message);
     res.status(500).json({ success: false, message: error.message });
 }
+
 };
 // email.js defines the functions for sending verification and welcome emails using the Mailtrap API. The sendVerificationEmail function takes the email address and verification token as arguments and sends a verification email to the user using the MailtrapClient instance and the VERIFICATION_EMAIL_TEMPLATE.
 // The sendWelcomeEmail function takes the email address and name as arguments and sends a welcome email to the user using the MailtrapClient instance and the template_uuid and template_variables.
