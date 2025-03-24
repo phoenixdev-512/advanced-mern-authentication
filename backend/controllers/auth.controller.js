@@ -161,6 +161,22 @@ export const forgotPassword = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+export const resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password } = req.body;
+
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordTokenExpiresAt: { $gt: Date.now() }
+        });
+        if (!user) {
+            return res.status(400).json({ success: false, message: "Invalid or expired password reset token" });
+        }
+}   catch (error) {
+    console.error("Reset password error:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+}
 // The code above is a controller that handles the authentication logic
 
 // still need to implement the reset password function
