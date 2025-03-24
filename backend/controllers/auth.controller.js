@@ -126,27 +126,33 @@ export const logout = async (req, res) => {
     res.status(200).json({ success: true, message: "Logged out successfully" });
 };
 
-export const forgotPassword = async (req, res) => {
-    const { email } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        if (!userAlreadyExists) {
-            res.status(500).json({success: false, message: error .message });
-        }
-        else {
-            res.status(200).json({
-                success: true,
-                message: "Reset link sent successfully",
-            });
-        }
-        // generate token and set expiration time
-        // send email with reset link
-        // link should contain token
-    } catch (error) {
-        console.error("Error in Resetting Password");
-        res.status(500)
-    }
+export const forgotPassword = async (res, req) => {
+    const {email} = req.body;
+  try {
+    const user = await User.findOne({email});
+
+    if(!user) {
+        return res.status(400).json({ success: false, message: "User not found"});
+  }
+    // Generate the token
+    const resetToken =  crypto.randomBytes(20).toString("hex");
+    const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordTokenExpiresAt = resetTokenExpiresAt;
+
+    await user.save();
+
+    //send User email
+    await sendResetPasswordEmail(user.email, '${process.env.CLIENT_URL}/reset-password?token=${resetToken}');
+
+} catch (error) {
+    console.error("Forgot password error:", error.message);
+    res.status(500).json({ success: false, message: error.message });
+}
 };
+// The code above is a controller that handles the authentication logic
+
 // still need to implement the reset password function
 // the process of adding the reset password function is similar to the verification email function
 // the only difference is the token and the expiration time

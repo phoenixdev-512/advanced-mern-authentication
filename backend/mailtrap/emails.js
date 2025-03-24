@@ -60,27 +60,7 @@ export const sendResetPasswordEmail = async (email, resetURL) => {
     }
 };
 
-export const forgotPassword = async (res, req) => {
-    const {email} = req.body;
-  try {
-    const user = await User.findOne({email});
-
-    if(!user) {
-        return res.status(400).json({ success: false, message: "User not found"});
-  }
-    // Generate the token
-    const resetToken =  crypto.randomBytes(20).toString("hex");
-    const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
-
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordTokenExpiresAt = resetTokenExpiresAt;
-
-    await user.save();
-
-    //send User email
-    await sendResetPasswordEmail(user.email, '${process.env.CLIENT_URL}/reset-password?token=${resetToken}');
-
-} catch (error) {
+ catch (error) {
     console.error("Forgot password error:", error.message);
     res.status(500).json({ success: false, message: error.message });
 }
