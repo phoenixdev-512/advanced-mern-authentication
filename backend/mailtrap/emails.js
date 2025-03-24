@@ -51,7 +51,18 @@ export const forgotPassword = async (res, req) => {
     if(!user) {
         return res.status(400).json({ success: false, message: "User not found"});
   }
+    // Generate the token
     const resetToken =  crypto.randomBytes(20).toString("hex");
+    const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordTokenExpiresAt = resetTokenExpiresAt;
+
+    await user.save();
+
+    //send User email
+    await sendResetPasswordEmail(user.email, "http://localhost:3000/reset-password?token=${resetToken}");
+
 } catch (error) {
     console.error("Forgot password error:", error.message);
     res.status(500).json({ success: false, message: error.message });
