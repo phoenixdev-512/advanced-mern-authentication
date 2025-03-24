@@ -7,6 +7,8 @@ import { login, logout, signup, verifyEmail, forgotPassword, resetPassword } fro
 // The auth.route.js file is responsible for defining the routes for the authentication endpoints. It imports the necessary functions from the auth.controller.js file and uses the express.Router() method to define the routes for the signup, login, logout, verify-email, and forgot-password endpoints.
 const router =  express.Router();
 
+router.get("/check-auth", verifyToken, checkAuth);
+
 router.post("/signup", signup)
 router.post("/login", login)
 router.post("/logout", logout)
