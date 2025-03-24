@@ -7,5 +7,7 @@ export const verifyToken = (req, res, next) => {
         is(!token) return res.status(401).json({success: false, message: "Unauthorized - No token provided"});
         
     } catch (error) {
+        console.error("Token verification error:", error.message);
+        res.status(500).json({ success: false, message: error.message });
     }
 };
