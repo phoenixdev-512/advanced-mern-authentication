@@ -129,7 +129,7 @@ export const logout = async (req, res) => {
 };
 
 export const forgotPassword = async (res, req) => {
-    const {email} = req.body;
+    const { email} = req.body;
   try {
     const user = await User.findOne({email});
 
