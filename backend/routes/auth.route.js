@@ -1,6 +1,6 @@
 import express from 'express';
-import { login, logout, signup, verifyEmail, forgotPassword, resetPassword } from '../controllers/auth.controller.js';
-import { checkAuth } from '../middleware/auth.middleware.js';
+import { login, logout, signup, verifyEmail, forgotPassword, resetPassword, checkAuth } from '../controllers/auth.controller.js';
+import { verifyToken } from '../middleware/auth.middleware.js';
 // const router = express.Router(); is used to create a new router object in the auth.route.js file.
 // The router object is used to define the routes for the authentication endpoints, such as /signup, /login, /logout, /verify-email, and /forgot-password.  
 // The router object is then exported to be used in other parts of the application, such as the server.js file, to define the routes for the authentication endpoints.

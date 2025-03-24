@@ -190,6 +190,23 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });}
 };
 
+export const checkAuth = async (req, res) => {
+    try {
+        const user = await User.findById(req.userID);
+        if (!user) {
+            return res.status(400).json({ success: false, message: "User not found" });
+        }
+
+        res.status(200).json({
+            success: true,
+            user,
+            message: "User authenticated successfully"
+        });
+    }   catch (error) {
+        console.error("Check auth error:", error.message);
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
 // The code above is a controller that handles the authentication logic
 // still need to implement the reset password function
 // the process of adding the reset password function is similar to the verification email function
