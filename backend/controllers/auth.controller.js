@@ -173,16 +173,24 @@ export const resetPassword = async (req, res) => {
         if (!user) {
             return res.status(400).json({ success: false, message: "Invalid or expired password reset token" });
         }
+
+        // ✅ Hashing the new password before saving it
+        const hashedPassword = await bcrypt.hash(password, 10);
+        user.password = hashedPassword;
+        user.resetPasswordToken = null;
+        user.resetPasswordTokenExpiresAt = null;
+        await user.save();
+
+        await sendResetSuccessEmail(user.email, `${process.env.CLIENT_URL}/login`);
+
 }   catch (error) {
     console.error("Reset password error:", error.message);
-    res.status(500).json({ success: false, message: error.message });
-}
-// The code above is a controller that handles the authentication logic
+    res.status(500).json({ success: false, message: error.message });}
+};
 
+// The code above is a controller that handles the authentication logic
 // still need to implement the reset password function
 // the process of adding the reset password function is similar to the verification email function
 // the only difference is the token and the expiration time
 // the token is generated randomly and the expiration time is set to 1 hour
 // the user will be able to reset the password only if the token is valid and not expired
-
-
