@@ -13,6 +13,6 @@ export const verifyToken = (req, res, next) => {
         
     } catch (error) {
         console.error("tocken verification error:", error.message);
-        return res.status(500).json({success: false, message: error.message});
+        return res.status(500).json({success: false, message:"Server error"});
 }
 };
