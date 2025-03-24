@@ -1,3 +1,4 @@
+import { User } from "../models/user.model.js";
 import { VERIFICATION_EMAIL_TEMPLATE } from "./emailTemplates.js";
 import { mailtrapClient, sender } from "./mailtrap.config.js";
 
@@ -39,6 +40,21 @@ export const sendWelcomeEmail =  async (email, name) => {
     console.error('Error sending Welcom email', error);
 
     throw new Error('Error sending Welcom email: ${error}');
+}
+};
+
+export const forgotPassword = async (res, req) => {
+    const {email} = req.body;
+  try {
+    const user = await User.findOne({email});
+
+    if(!user) {
+        return res.status(400).json({ success: false, message: "User not found"});
+  }
+    const resetToken =  crypto.randomBytes(20).toString("hex");
+} catch (error) {
+    console.error("Forgot password error:", error.message);
+    res.status(500).json({ success: false, message: error.message });
 }
 };
 // email.js defines the functions for sending verification and welcome emails using the Mailtrap API. The sendVerificationEmail function takes the email address and verification token as arguments and sends a verification email to the user using the MailtrapClient instance and the VERIFICATION_EMAIL_TEMPLATE.
