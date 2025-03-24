@@ -59,6 +59,24 @@ export const sendResetPasswordEmail = async (email, resetURL) => {
         throw new Error('Error sending password reset email: ${error}');
     }
 };
+
+export const sendResetSuccessEmail = async (email) => {
+    const recipient = [{email}];
+    try {
+        const response = await mailtrapClient.send({
+            from: sender,
+            to: recipient,
+            subject: "Password reset successful",
+            html: PASSWORD_RESET_SUCCESS_TEMPLATE,
+            category: "Password Reset"
+        });
+
+        console.log("Password reset success email sent successfully", response);
+    } catch (error) {
+        console.error('Error sending password reset success email', error);
+        throw new Error('Error sending password reset success email: ${error}');
+    }
+};
 // The sendVerificationEmail function takes the email address and verification token as arguments and sends a verification email to the user using the MailtrapClient instance and the VERIFICATION_EMAIL_TEMPLATE.;
 // email.js defines the functions for sending verification and welcome emails using the Mailtrap API. The sendVerificationEmail function takes the email address and verification token as arguments and sends a verification email to the user using the MailtrapClient instance and the VERIFICATION_EMAIL_TEMPLATE.
 // The sendWelcomeEmail function takes the email address and name as arguments and sends a welcome email to the user using the MailtrapClient instance and the template_uuid and template_variables.
