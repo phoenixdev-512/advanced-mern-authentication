@@ -59,7 +59,7 @@ export const sendResetPasswordEmail = async (email, resetURL) => {
         throw new Error('Error sending password reset email: ${error}');
     }
 };
-// testing commit shortcut
+// testing shortcut method to commit
 export const sendResetSuccessEmail = async (email) => {
     const recipient = [{email}];
     try {
